@@ -7,7 +7,7 @@ BLD_LISTENER = $(BLD)/listener
 BLD_MANAGER = $(BLD)/manager
 BLD_WORKER = $(BLD)/workers
 
-# Specify derictories of .c files
+# Specify directories of .c files
 MANAGER = $(SRC)/manager
 WORKER = $(SRC)/worker
 LISTENER = $(SRC)/listener
