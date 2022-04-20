@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
       close(fd[WRITE]);
       execlp("inotifywait", "inotifywait", "-m", "example", "-e", "create", (char*)NULL);
       perror("execlp failed.\n");
+      exit(1);
    }
 
    return 0;
