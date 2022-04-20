@@ -19,17 +19,26 @@ int main(int argc, char *argv[])
 
    // Manager Process
    if (pid) {
+      char buffer[1024];
+
       close(fd[WRITE]);
-      dup2(fd[READ],0); // read pipe will become stdin(0)
+      
+      while (read(fd[READ], buffer, sizeof(buffer)) != 0)
+      {
+         printf("%s\n",buffer);
+         //fflush(stdin);
+      }
+      //dup2(fd[READ],0); // read pipe will become stdin(0)
       close(fd[READ]);
    }
+
    // Listener Process
    else
    {
       close(fd[READ]);
       dup2(fd[WRITE],1); // stdout(1) of exec'd inotifywait will write data to pipe
       close(fd[WRITE]);
-      execlp("inotifywait", "inotifywait", "-m", "example", (char*)NULL);
+      execlp("inotifywait", "inotifywait", "-m", "example", "-e", "create", (char*)NULL);
       perror("execlp failed.\n");
    }
 
