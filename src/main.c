@@ -25,7 +25,13 @@ int main(int argc, char *argv[])
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
-         printf("%s\n",buffer);
+         //printf("BUFFER:%s\n",buffer);
+         char* temp, *token = strtok(buffer, " ");
+         while( token != NULL ) {
+            strcpy(temp,token);     // last loop will store filename
+            token = strtok(NULL, " ");
+         }
+         printf( "TEMP: %s\n", temp );
          //fflush(stdin);
       }
       //dup2(fd[READ],0); // read pipe will become stdin(0)
