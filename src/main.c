@@ -20,16 +20,17 @@ int main(int argc, char *argv[])
    // Manager Process
    if (pid) {
       char buffer[1024];
-
       close(fd[WRITE]);
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
+         // extraction of filename from create message sent by inotifywait
          char* temp, *token = strtok(buffer, " ");
          while( token != NULL ) {
             strcpy(temp,token);     // last loop will store filename
             token = strtok(NULL, " ");
          }
+         
          printf( "TEMP: %s\n", temp );
       }
       close(fd[READ]);

@@ -11,8 +11,8 @@ Queue* Create_Queue(void)
 	}
 
     // allocation of memory for first and last node of deque
-    queue->front = malloc(sizeof(Q_node));
-    queue->rear = malloc(sizeof(Q_node));
+    queue->front = malloc(sizeof(Worker));
+    queue->rear = malloc(sizeof(Worker));
 
     // Initialization of empty data members
     queue->size = 0;
@@ -26,8 +26,8 @@ Queue* Create_Queue(void)
 void Queue_Push(Queue** queue, int item)
 {
     // Creation of newnode
-	Q_node * NewNode;
-	NewNode = malloc(sizeof(Q_node));
+	Worker * NewNode;
+	NewNode = malloc(sizeof(Worker));
 	NewNode->element = item;
 	NewNode->next = NULL;
 	
@@ -51,7 +51,7 @@ void Queue_Pop(Queue** queue)
         return;
     }
 
-    Q_node* temp;
+    Worker* temp;
     temp = (*queue)->rear;
 
     (*queue)->rear = (*queue)->rear->next;
@@ -72,7 +72,7 @@ void Print_Queue(Queue* queue)
         return;
     }
 
-    Q_node *current;
+    Worker *current;
 	current = queue->rear;
 
 	while(current != NULL){

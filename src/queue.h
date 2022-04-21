@@ -5,15 +5,20 @@
 #include <stdlib.h>
 
 
-typedef struct Q_node {
+typedef struct Worker {
     int element;
-    struct Q_node* next;
-} Q_node;
+    // pid_t m_pid;
+    // char* filename;
+    // int busy;           // busy=1 if worker is busy, busy=0 if worker is NOT busy
+    // int readfd;
+    // int writefd;
+    struct Worker* next;
+} Worker;
 
 typedef struct Queue{
     int size; // may delete this
-    Q_node* front;
-    Q_node* rear;
+    Worker* front;
+    Worker* rear;
 }Queue;
 
 // Queue initialization and creation
