@@ -12,7 +12,7 @@ CFLAGS = -Wno-unused-parameter
 EXE_SNIFFER = ./sniffer
 
 # .o files needed
-OBJS =  $(SRC)/main.o
+OBJS =  $(SRC)/main.o $(SRC)/queue.o
 
 # Build executables
 all: $(EXE_SNIFFER)
