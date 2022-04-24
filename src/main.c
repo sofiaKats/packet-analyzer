@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
 {
    pid_t  pid, pid2;
    int fd[2];
-   int readfd, writefd;
 
    // Creation of unamed pipe
    if (pipe(fd) == -1){ perror("failed to create pipe.\n"); exit(1); }
@@ -33,13 +32,14 @@ int main(int argc, char *argv[])
 
    // Manager Process
    if (pid) {
-      char buffer[1024];
+      char buffer[MAXBUFF];
       close(fd[WRITE]);
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
          // extraction of filename from create message sent by inotifywait
-         char* temp, *token = strtok(buffer, " ");
+         char* temp = malloc(sizeof(char) * MAXBUFF); 
+         char *token = strtok(buffer, " ");
          while( token != NULL ) {
             strcpy(temp,token);     // last loop will store filename
             token = strtok(NULL, " ");
@@ -47,17 +47,16 @@ int main(int argc, char *argv[])
          
          printf( "TEMP: %s\n", temp );
 
+         int readfd, writefd;
+         create_fifos();
          if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); }
-
-
-
+         
          // Manager Process
          if(pid2)
          {
-            /* Create the FIFOs, then open them -- one for
+            /* Created the FIFOs, now open them -- one for
             * reading and one for writing.
             */
-            create_fifos();
             readfd = open_fifo(FIFO1, READ);
             writefd = open_fifo(FIFO2, WRITE);
 
@@ -65,6 +64,7 @@ int main(int argc, char *argv[])
 
             close(readfd);
             close(writefd);
+            free(temp);
          }
          // Worker Process
          else
