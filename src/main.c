@@ -12,6 +12,7 @@
 #define MAXBUFF 1024
 
 #include "communication.h"
+#include "queue.h"
 
 
 int main(int argc, char *argv[])
@@ -39,6 +40,9 @@ int main(int argc, char *argv[])
             token = strtok(NULL, " ");
          }
          printf( "TEMP: %s\n", temp );
+         
+         // queue to with worker info
+         Queue * queue = Create_Queue();
 
          //check if a brand new worker is needed
          create_fifos(); /*create named pipe for worker-manager communication*/
