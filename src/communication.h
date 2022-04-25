@@ -19,9 +19,18 @@
 #define PERMS   0666
 
 
+// function to create named pipes between manager and worker
 void create_fifos();
-int open_fifo(char *fifo, int action);
-void manager(int readfd, int writefd, char *filename);
-void worker(int readfd, int writefd);
 
+// function to open named pipe between manager and worker
+int open_fifo(char *fifo, int action);
+
+// function to send filename through named pipe
+void send_filename_to_worker(char* filename);
+
+// function to receive filename through named pipe
+char* receive_filename_from_manager(void);
+
+// when done with communication, we delete the fifos
+void unlink_fifos(void);
 #endif

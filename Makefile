@@ -6,7 +6,7 @@ BLD = ./obj
 
 # Compiler options
 CC = gcc
-CFLAGS = -Wno-unused-parameter
+CFLAGS = -Wno-unused-parameter -g
 
 # Executable file names
 EXE_SNIFFER = ./sniffer

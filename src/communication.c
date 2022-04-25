@@ -20,51 +20,58 @@ int open_fifo(char* fifo, int action) {
    return value;
 }
 
-
-void manager(int readfd, int writefd, char* filename)
+void send_filename_to_worker(char* filename)
 {
-   char buff[MAXBUFF];
-   int n;
-
-   // write it to the IPC descriptor.
-   strcpy(buff, filename);
-   n = strlen(buff);
-
-   if (write(writefd, buff, n) != n)
-      perror("worker: filename write error");
-
-   /* Read data from the IPC descriptor and write to
-    * standard output. 
+    int readfd, writefd;
+    /* Created the FIFOs, now open them -- one for
+    * reading and one for writing.
     */
+    readfd = open_fifo(FIFO1, READ);
+    writefd = open_fifo(FIFO2, WRITE);
 
-   while ( (n = read(readfd, buff, MAXBUFF)) > 0)
-      if (write(1, buff, n) != n)   /* fd 1 = stdout */ {
-         perror("worker: data write error \n");
-      }
-      else
-          printf("\n above received by worker(im in manager)\n");
-    
-   if (n <0) { 
-      perror("worker: data read error \n");
-   }
+    char buff[MAXBUFF];
+    int n;
+
+    // write it to the IPC descriptor.
+    strcpy(buff, filename);
+    n = strlen(buff);
+
+    if (write(writefd, buff, n) != n)
+        perror("worker: filename write error");
+
+    close(readfd);
+    close(writefd);
 }
 
-void worker(int readfd, int writefd)
+char* receive_filename_from_manager(void)
 {
-   char buff[MAXBUFF];
-   char errmesg[256];
-   int n, fd;
+    int readfd, writefd;
+    /* Open the FIFOs.  We assume server has already created them.  */
+    writefd = open_fifo(FIFO1, WRITE);
+    readfd = open_fifo(FIFO2, READ);
 
-   /* Read the filename from the IPC descriptor. */
-   if ((n= read(readfd, buff, MAXBUFF)) <= 0) {
-       perror("worker: filename read error ");
-   }
+    char buff[MAXBUFF];
+    int n;
 
-   buff[n] = '\0';  /* null terminate filename */
-    printf("message received from worker:%s\n",buff);
-    // write filename back to manager pipe
-    if (write(writefd, buff, n) != n) {
-        perror("worker: data write error");
+    /* Read the filename from the IPC descriptor. */
+    if ((n= read(readfd, buff, MAXBUFF)) <= 0) {
+        perror("worker: filename read error ");
+    }
+
+    buff[n] = '\0';  /* null terminate filename */
+        printf("message received from worker:%s\n",buff);
+         
+    close(readfd);
+    close(writefd);
+}
+
+void unlink_fifos(void)
+{
+    /* Delete the FIFOs, now that we're done.  */
+    if ( unlink(FIFO1) < 0) {
+        perror("client: can't unlink \n");
+    }
+    if ( unlink(FIFO2) < 0) {
+        perror("client: can't unlink \n");
     }
 }
-

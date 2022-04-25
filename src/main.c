@@ -10,8 +10,6 @@
 #define  READ 0
 #define  WRITE 1
 #define MAXBUFF 1024
-#define FIFO1   "/tmp/fifo.1"
-#define FIFO2   "/tmp/fifo.2"
 
 #include "communication.h"
 
@@ -34,59 +32,30 @@ int main(int argc, char *argv[])
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
          // extraction of filename from create message sent by inotifywait
-         char* temp = malloc(sizeof(char) * MAXBUFF); 
-         char *token = strtok(buffer, " ");
+         char  temp[MAXBUFF+1] , *token = strtok(buffer, " "); 
+         memset(temp, 0, MAXBUFF);
          while( token != NULL ) {
             strcpy(temp,token);     // last loop will store filename
             token = strtok(NULL, " ");
          }
-         
          printf( "TEMP: %s\n", temp );
 
-         int readfd, writefd;
-         create_fifos();
-         if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); }
+         //check if a brand new worker is needed
+         create_fifos(); /*create named pipe for worker-manager communication*/
+         if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); } /*create worker*/ 
          
          // Manager Process
-         if(pid2)
-         {
-            /* Created the FIFOs, now open them -- one for
-            * reading and one for writing.
-            */
-            readfd = open_fifo(FIFO1, READ);
-            writefd = open_fifo(FIFO2, WRITE);
-
-            manager(readfd, writefd, temp);
-
-            close(readfd);
-            close(writefd);
-            free(temp); //!!!!!!!!!!!!!!!!!!!
+         if(pid2) {
+            send_filename_to_worker(temp);
          }
          // Worker Process
-         else
-         {
-            /* Open the FIFOs.  We assume server has already created them.  */
-            writefd = open_fifo(FIFO1, WRITE);
-            readfd = open_fifo(FIFO2, READ);
-
-            worker(readfd, writefd);
-         
-            close(readfd);
-            close(writefd);
-
-            /* Delete the FIFOs, now that we're done.  */
-
-            if ( unlink(FIFO1) < 0) {
-               perror("client: can't unlink \n");
-            }
-            if ( unlink(FIFO2) < 0) {
-               perror("client: can't unlink \n");
-            }
+         else {
+            char* filename = receive_filename_from_manager();
+            unlink_fifos();
          }
       }
       close(fd[READ]);
    }
-
 
    // Listener Process
    else
