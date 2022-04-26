@@ -23,12 +23,22 @@ Queue* Create_Queue(void)
 }
 
 
-void Queue_Push(Queue** queue, int item)
+void Queue_Push(Queue** queue, pid_t m_pid, char* filename, int readfd, int writefd, char* rd_fifo_name, char* wr_fifo_name)
 {
     // Creation of newnode
 	Worker * NewNode;
 	NewNode = malloc(sizeof(Worker));
-	NewNode->element = item;
+	//NewNode->element = item;
+    NewNode->m_pid = m_pid;
+    NewNode->filename = malloc(sizeof(char) * 1024);
+    strcpy(NewNode->filename, filename);
+    NewNode->busy = 1;
+    NewNode->readfd = readfd;
+    NewNode->writefd = writefd;
+    NewNode->rd_fifo_name = malloc(sizeof(char) * 1024);
+    NewNode->wr_fifo_name = malloc(sizeof(char) * 1024);
+    strcpy(NewNode->rd_fifo_name, rd_fifo_name);
+    strcpy(NewNode->wr_fifo_name, wr_fifo_name);
 	NewNode->next = NULL;
 	
 	(*queue)->size++;
@@ -76,7 +86,7 @@ void Print_Queue(Queue* queue)
 	current = queue->rear;
 
 	while(current != NULL){
-		printf("%d",current->element);
+		printf("%d",current->m_pid);
 		if(current->next != NULL) {
 			printf(",");
 		}

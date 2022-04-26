@@ -2,16 +2,18 @@
 #define QUEUE_H
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 
 typedef struct Worker {
-    int element;
-    // pid_t m_pid;
-    // char* filename;
-    // int busy;           // busy=1 if worker is busy, busy=0 if worker is NOT busy
-    // int readfd;
-    // int writefd;
+    pid_t m_pid;
+    char* filename;
+    int busy;           // busy=1 if worker is busy, busy=0 if worker is NOT busy
+    int readfd;
+    int writefd;
+    char* rd_fifo_name;
+    char* wr_fifo_name;
     struct Worker* next;
 } Worker;
 
@@ -25,7 +27,7 @@ typedef struct Queue{
 Queue* Create_Queue(void);
 
 // Insert item in queue
-void Queue_Push(Queue** queue, int item);
+void Queue_Push(Queue** queue, pid_t m_pid, char* filename, int readfd, int writefd, char* rd_fifo_name, char* wr_fifo_name);
 
 // Delete front item from queue
 void Queue_Pop(Queue** queue);

@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
       memset(buffer, 0, MAXBUFF);  // initializing the buffer content
       char* filename = malloc(sizeof(char) * 1024);
       close(fd[WRITE]);
+
+      // queue to with worker info
+      Queue * queue = Create_Queue();
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
@@ -38,9 +41,6 @@ int main(int argc, char *argv[])
          extract_filename(buffer, &filename);
          printf( "TEMP: %s\n", filename);
          
-         // queue to with worker info
-         Queue * queue = Create_Queue();
-
          ++counter;
          //check if a brand new worker is needed
          // malloc for fifo names
@@ -54,7 +54,9 @@ int main(int argc, char *argv[])
          }
          // Worker Process
          else {
-            receive_filename_from_manager(fifo1, fifo2);
+            int readfd, writefd;
+            receive_filename_from_manager(fifo1, fifo2, &readfd, &writefd);
+            Queue_Push(&queue, getpid(), filename, readfd, writefd, fifo2, fifo1);
             unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
          }

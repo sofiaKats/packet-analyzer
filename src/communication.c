@@ -44,25 +44,24 @@ void send_filename_to_worker(char* filename, char* fifo1, char* fifo2) {
     close(writefd);
 }
 
-void receive_filename_from_manager(char* fifo1, char* fifo2) {
-    int readfd, writefd;
+void receive_filename_from_manager(char* fifo1, char* fifo2, int* readfd, int* writefd) {
     /* Open the FIFOs.  We assume server has already created them.  */
-    writefd = open_fifo(fifo1, WRITE);
-    readfd = open_fifo(fifo2, READ);
+    *writefd = open_fifo(fifo1, WRITE);
+    *readfd = open_fifo(fifo2, READ);
 
     char buff[MAXBUFF];
     int n;
 
     /* Read the filename from the IPC descriptor. */
-    if ((n= read(readfd, buff, MAXBUFF)) <= 0) {
+    if ((n= read(*readfd, buff, MAXBUFF)) <= 0) {
         perror("worker: filename read error ");
     }
 
     buff[n] = '\0';  /* null terminate filename */
         printf("message received from worker:%s\n",buff);
          
-    close(readfd);
-    close(writefd);
+    close(*readfd);
+    close(*writefd);
 }
 
 void unlink_fifo(char* fifo) {
