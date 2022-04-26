@@ -18,7 +18,7 @@
 int main(int argc, char *argv[])
 {
    pid_t  pid, pid2;
-   int fd[2];
+   int fd[2], counter = 0 ; // counter used for creating unique fifo names
 
    // Creation of unamed pipe
    if (pipe(fd) == -1){ perror("failed to create pipe.\n"); exit(1); }
@@ -44,18 +44,23 @@ int main(int argc, char *argv[])
          // queue to with worker info
          Queue * queue = Create_Queue();
 
+         ++counter;
          //check if a brand new worker is needed
-         create_fifos(); /*create named pipe for worker-manager communication*/
+         // malloc for fifo names
+         char* fifo1 = malloc(sizeof(char) * 1024) , *fifo2 = malloc(sizeof(char) * 1024);
+         create_fifos(counter, &fifo1, &fifo2); /*create named pipe for worker-manager communication*/
          if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); } /*create worker*/ 
          
          // Manager Process
          if(pid2) {
-            send_filename_to_worker(temp);
+            send_filename_to_worker(temp, fifo1, fifo2);
          }
          // Worker Process
          else {
-            char* filename = receive_filename_from_manager();
-            unlink_fifos();
+            char* filename = receive_filename_from_manager(fifo1, fifo2);
+            unlink_fifo(fifo1);
+            unlink_fifo(fifo2);
+            free(fifo1); free(fifo2);
          }
       }
       close(fd[READ]);

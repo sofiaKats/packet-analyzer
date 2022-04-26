@@ -1,13 +1,16 @@
 #include "communication.h"
 
-void create_fifos()
+void create_fifos(int no_fifo, char** fifo1, char** fifo2)
 {
-    if ( (mkfifo(FIFO1, PERMS) < 0) && (errno != EEXIST) ) {
+    // Create a unique name (e.g manager_f_read_1 , manager_f_write_6 )
+	sprintf(*fifo1, "%s%d", "manager_f_read_", no_fifo);
+    if ( (mkfifo(*fifo1, PERMS) < 0) && (errno != EEXIST) ) {
        perror("can't create fifo");
    }
 
-   if ((mkfifo(FIFO2, PERMS) < 0) && (errno != EEXIST)) {
-       unlink(FIFO1);
+   sprintf(*fifo2, "%s%d", "manager_f_write_", no_fifo);
+   if ((mkfifo(*fifo2, PERMS) < 0) && (errno != EEXIST)) {
+       unlink_fifo(*fifo1);
        perror("can't create fifo");
    }
 }
@@ -20,14 +23,14 @@ int open_fifo(char* fifo, int action) {
    return value;
 }
 
-void send_filename_to_worker(char* filename)
+void send_filename_to_worker(char* filename, char* fifo1, char* fifo2)
 {
     int readfd, writefd;
     /* Created the FIFOs, now open them -- one for
     * reading and one for writing.
     */
-    readfd = open_fifo(FIFO1, READ);
-    writefd = open_fifo(FIFO2, WRITE);
+    readfd = open_fifo(fifo1, READ);
+    writefd = open_fifo(fifo2, WRITE);
 
     char buff[MAXBUFF];
     int n;
@@ -43,12 +46,12 @@ void send_filename_to_worker(char* filename)
     close(writefd);
 }
 
-char* receive_filename_from_manager(void)
+char* receive_filename_from_manager(char* fifo1, char* fifo2)
 {
     int readfd, writefd;
     /* Open the FIFOs.  We assume server has already created them.  */
-    writefd = open_fifo(FIFO1, WRITE);
-    readfd = open_fifo(FIFO2, READ);
+    writefd = open_fifo(fifo1, WRITE);
+    readfd = open_fifo(fifo2, READ);
 
     char buff[MAXBUFF];
     int n;
@@ -65,13 +68,10 @@ char* receive_filename_from_manager(void)
     close(writefd);
 }
 
-void unlink_fifos(void)
+void unlink_fifo(char* fifo)
 {
-    /* Delete the FIFOs, now that we're done.  */
-    if ( unlink(FIFO1) < 0) {
-        perror("client: can't unlink \n");
-    }
-    if ( unlink(FIFO2) < 0) {
+    /* Delete the FIFO, now that we're done.  */
+    if ( unlink(fifo) < 0) {
         perror("client: can't unlink \n");
     }
 }
