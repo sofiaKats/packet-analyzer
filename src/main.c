@@ -28,12 +28,13 @@ int main(int argc, char *argv[])
    // Manager Process
    if (pid) {
       char buffer[MAXBUFF];
+      memset(buffer, 0, MAXBUFF);
       close(fd[WRITE]);
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
-         // extraction of filename from create message sent by inotifywait
-         char  temp[MAXBUFF+1] , *token = strtok(buffer, " "); 
+         //extraction of filename from create message sent by inotifywait
+         char  temp[MAXBUFF] , *token = strtok(buffer, " "); 
          memset(temp, 0, MAXBUFF);
          while( token != NULL ) {
             strcpy(temp,token);     // last loop will store filename
