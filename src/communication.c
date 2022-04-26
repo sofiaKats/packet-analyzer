@@ -46,7 +46,7 @@ void send_filename_to_worker(char* filename, char* fifo1, char* fifo2)
     close(writefd);
 }
 
-char* receive_filename_from_manager(char* fifo1, char* fifo2)
+void receive_filename_from_manager(char* fifo1, char* fifo2)
 {
     int readfd, writefd;
     /* Open the FIFOs.  We assume server has already created them.  */

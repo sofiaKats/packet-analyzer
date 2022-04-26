@@ -57,9 +57,8 @@ int main(int argc, char *argv[])
          }
          // Worker Process
          else {
-            char* filename = receive_filename_from_manager(fifo1, fifo2);
-            unlink_fifo(fifo1);
-            unlink_fifo(fifo2);
+            receive_filename_from_manager(fifo1, fifo2);
+            unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
          }
       }
