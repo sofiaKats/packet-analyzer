@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
    // Manager Process
    if (pid) {
       char buffer[MAXBUFF];
-      memset(buffer, 0, MAXBUFF);
+      memset(buffer, 0, MAXBUFF);  // initializing the buffer content
       close(fd[WRITE]);
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
