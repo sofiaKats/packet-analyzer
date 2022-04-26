@@ -40,7 +40,7 @@ void send_filename_to_worker(char* filename, char* fifo1, char* fifo2)
     n = strlen(buff);
 
     if (write(writefd, buff, n) != n)
-        perror("worker: filename write error");
+        perror("manager: filename write error");
 
     close(readfd);
     close(writefd);
@@ -72,6 +72,6 @@ void unlink_fifo(char* fifo)
 {
     /* Delete the FIFO, now that we're done.  */
     if ( unlink(fifo) < 0) {
-        perror("client: can't unlink \n");
+        perror("can't unlink fifo\n");
     }
 }
