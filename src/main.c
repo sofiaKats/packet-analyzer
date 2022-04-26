@@ -29,18 +29,14 @@ int main(int argc, char *argv[])
    if (pid) {
       char buffer[MAXBUFF];
       memset(buffer, 0, MAXBUFF);  // initializing the buffer content
+      char* filename = malloc(sizeof(char) * 1024);
       close(fd[WRITE]);
       
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
          //extraction of filename from create message sent by inotifywait
-         char  temp[MAXBUFF] , *token = strtok(buffer, " "); 
-         memset(temp, 0, MAXBUFF);
-         while( token != NULL ) {
-            strcpy(temp,token);     // last loop will store filename
-            token = strtok(NULL, " ");
-         }
-         printf( "TEMP: %s\n", temp );
+         extract_filename(buffer, &filename);
+         printf( "TEMP: %s\n", filename);
          
          // queue to with worker info
          Queue * queue = Create_Queue();
@@ -54,7 +50,7 @@ int main(int argc, char *argv[])
          
          // Manager Process
          if(pid2) {
-            send_filename_to_worker(temp, fifo1, fifo2);
+            send_filename_to_worker(filename, fifo1, fifo2);
          }
          // Worker Process
          else {

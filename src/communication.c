@@ -75,3 +75,12 @@ void unlink_fifo(char* fifo)
         perror("can't unlink fifo\n");
     }
 }
+
+void extract_filename(char* buffer, char** temp)
+{
+    char *token = strtok(buffer, " "); 
+    while( token != NULL ) {
+        strcpy(*temp,token);     // last loop will store filename
+        token = strtok(NULL, " ");
+    }
+}

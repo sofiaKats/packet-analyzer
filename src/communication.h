@@ -31,4 +31,7 @@ void receive_filename_from_manager(char* fifo1, char* fifo2);
 
 // when done with communication, we delete the fifos
 void unlink_fifo(char* fifo);
+
+// given a C string(buffer), funct iterates through C string and extracts filename with strtok
+void extract_filename(char* buffer, char** temp);
 #endif
