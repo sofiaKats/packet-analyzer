@@ -28,7 +28,6 @@ void Queue_Push(Queue** queue, pid_t m_pid, char* filename, int readfd, int writ
     // Creation of newnode
 	Worker * NewNode;
 	NewNode = malloc(sizeof(Worker));
-	//NewNode->element = item;
     NewNode->m_pid = m_pid;
     NewNode->filename = malloc(sizeof(char) * 1024);
     strcpy(NewNode->filename, filename);
