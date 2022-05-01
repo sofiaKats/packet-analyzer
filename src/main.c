@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
          extract_filename(buffer, &filename);
          printf( "TEMP: %s\n", filename);
          
-         ++counter;
+         ++counter; 
          //check if a brand new worker is needed
          // malloc for fifo names
          char* fifo1 = malloc(sizeof(char) * 1024) , *fifo2 = malloc(sizeof(char) * 1024);
