@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
          //extraction of filename from create message sent by inotifywait
+         printf("buffer: %s\n", buffer);
          extract_filename(buffer, &filename);
          printf( "TEMP: %s\n", filename);
          
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
       dup2(fd[WRITE],1); // stdout(1) of listener process will write data to pipe
       close(fd[WRITE]);
 
-      execlp("inotifywait", "inotifywait", "-m", "example", "-e", "create", (char*)NULL);
+      execlp("inotifywait", "inotifywait", "-m", "example", "-e", "create", "-e" , "moved_to", (char*)NULL);
       perror("execlp failed.\n");
       exit(1);
    }
