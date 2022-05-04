@@ -27,7 +27,7 @@ int open_fifo(char *fifo, int action);
 void send_filename_to_worker(char* filename, char* fifo1, char* fifo2);
 
 // function to receive filename through named pipe
-void receive_filename_from_manager(char* fifo1, char* fifo2, int* readfd, int* writefd);
+void receive_filename_from_manager(char* fifo1, char* fifo2, char** filename, int* readfd, int* writefd);
 
 // when done with communication, we delete the fifos
 void unlink_fifo(char* fifo);

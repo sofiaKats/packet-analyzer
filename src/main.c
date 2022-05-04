@@ -11,6 +11,8 @@
 #define  WRITE 1
 #define MAXBUFF 1024
 
+extern int errno;
+
 #include "communication.h"
 #include "queue.h"
 
@@ -38,7 +40,6 @@ int main(int argc, char *argv[])
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
          //extraction of filename from create message sent by inotifywait
-         printf("buffer: %s\n", buffer);
          extract_filename(buffer, &filename);
          printf( "TEMP: %s\n", filename);
          
@@ -56,10 +57,15 @@ int main(int argc, char *argv[])
          // Worker Process
          else {
             int readfd, writefd;
-            receive_filename_from_manager(fifo1, fifo2, &readfd, &writefd);
+            char* file = malloc(sizeof(char) * MAXBUFF);
+            receive_filename_from_manager(fifo1, fifo2, &file, &readfd, &writefd);
+
+            printf("message received from worker AT MAIN:%s\n",file);
+            
             Queue_Push(&queue, getpid(), filename, readfd, writefd, fifo2, fifo1);
             unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
+            free(file);
          }
       }
       close(fd[READ]);

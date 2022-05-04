@@ -2,12 +2,12 @@
 
 void create_fifos(int no_fifo, char** fifo1, char** fifo2) {
     // Create a unique name (e.g manager_f_read_1 , manager_f_write_6 )
-	sprintf(*fifo1, "%s%d", "manager_f_read_", no_fifo);
+	sprintf(*fifo1, "%s%d", "manager_read_", no_fifo);
     if ( (mkfifo(*fifo1, PERMS) < 0) && (errno != EEXIST) ) {
        perror("can't create fifo");
    }
 
-   sprintf(*fifo2, "%s%d", "manager_f_write_", no_fifo);
+   sprintf(*fifo2, "%s%d", "manager_write_", no_fifo);
    if ((mkfifo(*fifo2, PERMS) < 0) && (errno != EEXIST)) {
        unlink_fifo(*fifo1);
        perror("can't create fifo");
@@ -44,7 +44,7 @@ void send_filename_to_worker(char* filename, char* fifo1, char* fifo2) {
     close(writefd);
 }
 
-void receive_filename_from_manager(char* fifo1, char* fifo2, int* readfd, int* writefd) {
+void receive_filename_from_manager(char* fifo1, char* fifo2, char** filename, int* readfd, int* writefd) {
     /* Open the FIFOs.  We assume server has already created them.  */
     *writefd = open_fifo(fifo1, WRITE);
     *readfd = open_fifo(fifo2, READ);
@@ -59,6 +59,7 @@ void receive_filename_from_manager(char* fifo1, char* fifo2, int* readfd, int* w
 
     buff[n] = '\0';  /* null terminate filename */
         printf("message received from worker:%s\n",buff);
+    strcpy(*filename, buff);
          
     close(*readfd);
     close(*writefd);
