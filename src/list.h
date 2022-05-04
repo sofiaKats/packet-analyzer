@@ -33,6 +33,7 @@ Url* Search_Url(List* list, const char* url);
 // function to delete entire list
 void Delete_List(List** list);
 
+// parse list nodes and write <url name> and <appearance number> to .out file
 void write_url_data(List* list, int fd);
 
 #endif

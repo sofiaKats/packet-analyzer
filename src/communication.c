@@ -58,7 +58,6 @@ void receive_filename_from_manager(char* fifo1, char* fifo2, char** filename, in
     }
 
     buff[n] = '\0';  /* null terminate filename */
-        printf("message received from worker:%s\n",buff);
     strcpy(*filename, buff);
          
     close(*readfd);
