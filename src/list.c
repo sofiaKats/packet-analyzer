@@ -44,7 +44,7 @@ void Insert_Node(List** list, const char* url)
 // function to print list
 void Print(List* list)
 {
-    if(list == NULL) {
+    if(list->head == NULL) {
         printf("Nothing to print here, list is empty.\n");
         return;
     }

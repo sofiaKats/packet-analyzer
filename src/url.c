@@ -17,11 +17,13 @@ void open_file_and_search_for_urls(char* filename)
         char *temp_buff = buffer; // coping buffer to avoid strtok_r from changing it
 
         find_urls(&temp_buff, url_list);
+        create_file_and_write_valid_urls(url_list, token);
     }
-    Print(url_list);
     free(buffer);
     free(file);
     if (close(fd) < 0) perror("Error while closing file @ url.c file."); 
+
+    
 }   
 
 
@@ -56,4 +58,21 @@ void find_urls(char** temp_buff, List* url_list) {
             }
         }
         regfree(&regex);
+}
+
+void create_file_and_write_valid_urls(List* url_list, char* filename)
+{
+    int fd;
+    char fname[512];
+    sprintf(fname, "%s.out", filename);
+    // open .out file with suitable permissions
+    mode_t fdmode = (S_IRUSR | S_IWUSR);
+    if ((fd = open(fname, O_RDWR | O_CREAT, fdmode)) == -1)
+        perror("Failed to open .out file");
+
+    write_url_data(url_list, fd); 
+     
+     // close opened file
+    if (close(fd) < 0) perror("Error while closing .out file.");
+    Delete_List(&url_list); // we don't need the list anymore
 }
