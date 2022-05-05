@@ -4,7 +4,7 @@ void open_file_and_search_for_urls(char* filename)
 {
     int fd;
     char *file = calloc(1024, sizeof(char)), *buffer = calloc(MAXBUFF, sizeof(char)); 
-    List* url_list = Create_List();
+    List* url_list = Create_List();  // list to hold url strings and no of appearance in file
 
     char *token = strtok(filename, "\n");  // getting rid of garbage '\n' value from pipe
     sprintf(file, "example/%s", token);    // !!!!! fix the directory name
@@ -22,8 +22,6 @@ void open_file_and_search_for_urls(char* filename)
     free(buffer);
     free(file);
     if (close(fd) < 0) perror("Error while closing file @ url.c file."); 
-
-    
 }   
 
 
@@ -31,6 +29,7 @@ void find_urls(char** temp_buff, List* url_list) {
         char* token, *line;
         // ABOUT REGEX PATTERN
         //   ^  : asserts position at start of a line
+        //   |  : boolean OR operation
         // {1}  : word occurs exactly once
         regex_t    regex;                                                            
         char       *pattern = "^http://www.{1}|^http://{1}";                                       
