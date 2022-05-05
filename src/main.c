@@ -5,7 +5,8 @@
 #include <sys/types.h>
 #include <fcntl.h> 
 #include <sys/errno.h>
-#include  <sys/stat.h>
+#include <sys/stat.h>
+#include <signal.h>
 
 #define  READ 0
 #define  WRITE 1
@@ -15,6 +16,7 @@ extern int errno;
 
 #include "communication.h"
 #include "queue.h"
+#include "url.h"
 
 
 int main(int argc, char *argv[])
@@ -49,7 +51,7 @@ int main(int argc, char *argv[])
          char* fifo1 = malloc(sizeof(char) * 1024) , *fifo2 = malloc(sizeof(char) * 1024);
          create_fifos(counter, &fifo1, &fifo2); /*create named pipe for worker-manager communication*/
          if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); } /*create worker*/ 
-         
+         printf("fork:%d happened\n",counter);
          // Manager Process
          if(pid2) {
             send_filename_to_worker(filename, fifo1, fifo2);
@@ -59,13 +61,22 @@ int main(int argc, char *argv[])
             int readfd, writefd;
             char* file = malloc(sizeof(char) * MAXBUFF);
             receive_filename_from_manager(fifo1, fifo2, &file, &readfd, &writefd);
+            Queue_Push(&queue, getpid(), file, readfd, writefd, fifo2, fifo1);
 
-            printf("message received from worker AT MAIN:%s\n",file);
-            
-            Queue_Push(&queue, getpid(), filename, readfd, writefd, fifo2, fifo1);
+            printf("message received from worker:%s\n",file);
+            open_file_and_search_for_urls(file);
+            // int fd;
+            // //sprintf(file, "example/%s", file);
+            // if((fd = open("example/file1", O_RDONLY)) == -1)
+            //    printf("Couldn't open file. Error Number % d\n", errno); 
+            // else
+            //    printf("i opened the fucking file\n");
+
+           
             unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
             free(file);
+            raise(SIGSTOP);  // child sends SIGSTOP to itself
          }
       }
       close(fd[READ]);
