@@ -16,4 +16,7 @@
 // opens given file from inotifywait, reads it and finds all existing urls in file
 void open_file_and_search_for_urls(char* filename);
 
+// given a buffer, funct checks for the existance of urls using regex library
+void find_urls(char** temp_buff, List* url_list);
+
 #endif
