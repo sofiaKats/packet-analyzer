@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
             Queue_Push(&queue, getpid(), file, readfd, writefd, fifo2, fifo1);
 
             printf("message received from worker:%s\n",file);
+            sleep(1);
             open_file_and_search_for_urls(file);
            
             unlink_fifo(fifo1); unlink_fifo(fifo2);
