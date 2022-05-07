@@ -8,7 +8,7 @@ do
     echo "Checking all .out files for TLD : $TLD"
     counter=0
     # find all .out files in current directory
-    FILE_LIST=`ls ./*.out`
+    FILE_LIST=`ls out_files/*.out`
     for eachfile in ${FILE_LIST}
     do
         text=( $(cat "$eachfile") )
