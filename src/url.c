@@ -1,6 +1,6 @@
 #include "url.h"
 
-void open_file_and_search_for_urls(char* filename)
+void open_file_and_search_for_urls(int start, char* filename)
 {
     int fd;
     char *file = calloc(1024, sizeof(char)), *buffer = calloc(MAXBUFF, sizeof(char)); 
@@ -17,7 +17,7 @@ void open_file_and_search_for_urls(char* filename)
         char *temp_buff = buffer; // coping buffer to avoid strtok_r from changing it
 
         find_urls(&temp_buff, url_list);
-        create_file_and_write_valid_urls(url_list, token);
+        create_file_and_write_valid_urls(start, url_list, token);
     }
     free(buffer);
     free(file);
@@ -59,11 +59,16 @@ void find_urls(char** temp_buff, List* url_list) {
         regfree(&regex);
 }
 
-void create_file_and_write_valid_urls(List* url_list, char* filename)
+void create_file_and_write_valid_urls(int start, List* url_list, char* filename)
 {
+    // if it's the first time we create a .out file, make sure
+    // out_files directory is empty and ready for new use
+    if(start==1) empty_directory("out_files");
     int fd;
     char fname[512];
-    sprintf(fname, "%s.out", filename);
+
+    sprintf(fname, "out_files/%s.out", filename);
+
     // open .out file with suitable permissions
     mode_t fdmode = (S_IRUSR | S_IWUSR);
     if ((fd = open(fname, O_RDWR | O_CREAT, fdmode)) == -1)
@@ -74,4 +79,23 @@ void create_file_and_write_valid_urls(List* url_list, char* filename)
      // close opened file
     if (close(fd) < 0) perror("Error while closing .out file.");
     Delete_List(&url_list); // we don't need the list anymore
+}
+
+
+void empty_directory(char* directory) {
+    struct dirent *dr;
+    char file_path[350];
+    DIR* dir;
+
+    if ((dir = opendir (directory)) != NULL) {
+        // read directory and delete all existing files in directory
+
+        while ((dr = readdir (dir)) != NULL) {
+            if (!strcmp(dr->d_name, ".") || !strcmp(dr->d_name, "..")) continue;
+            sprintf(file_path, "out_files/%s", dr->d_name);
+            if(remove(file_path)) perror("Error at url.c. Couldn't remove file.\n"); //delete file
+        }
+
+    closedir (dir);
+    }
 }
