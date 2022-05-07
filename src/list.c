@@ -14,7 +14,7 @@ List* Create_List(void)
 }
 
 // function to add new node in list
-void Insert_Node(List** list, const char* url)
+void Insert_Node(List** list, char* url)
 {
     Url* newnode, *current;
     // url already exists on list, just increment the appearance counter and return
@@ -22,6 +22,8 @@ void Insert_Node(List** list, const char* url)
         newnode->appearance++;
         return;
     }
+
+    get_url_location(&url);
 
     newnode = malloc(sizeof(Url));
     newnode->url = malloc(sizeof(char) * 1024);
@@ -100,10 +102,29 @@ void write_url_data(List* list, int fd)
     Url* current = list->head;
     while (current) {
         strcpy(url_data, " ");
-        sprintf(url_data, "%s %d\n", current->url, current->appearance);
+        sprintf(url_data, "%s %d \n", current->url, current->appearance);
         printf("URL DATA: %s\n", url_data);
         write(fd ,(char *)url_data, strlen(url_data));
         current = current->next;
     }
     free(url_data);
+}
+
+void get_url_location(char** url)
+{
+    removeSubstr(*url, "/");
+}
+
+// given a and a substring it finds the url location with www.
+void removeSubstr (char *string, char *sub) {
+    int counter=0; 
+	char* token = strtok(string, sub);
+    char location[50];
+    while(token != NULL) {
+        strcpy(location, token);
+        token = strtok(NULL, sub);
+        // after second '/' break the loop, we found the location of url
+        if((++counter)==2) break;
+    }
+    strcpy(string, location);
 }
