@@ -6,6 +6,7 @@
 #include <string.h>
 #include <fcntl.h> 
 #include <unistd.h> 
+#include <regex.h>
 
 
 typedef struct node {
@@ -22,7 +23,7 @@ typedef struct List{
 List* Create_List(void);
 
 // function to add new node in list
-void Insert_Node(List** list, const char* url);
+void Insert_Node(List** list, char* url);
 
 // function to print list
 void Print(List* list);
@@ -35,5 +36,11 @@ void Delete_List(List** list);
 
 // parse list nodes and write <url name> and <appearance number> to .out file
 void write_url_data(List* list, int fd);
+
+// given a url, cut the useless parts out of the url and store location in char** url
+void get_url_location(char** url);
+
+// given a and a substring it finds the url location with www.
+void removeSubstr (char *string, char *sub);
 
 #endif
