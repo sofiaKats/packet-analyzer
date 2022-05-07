@@ -9,6 +9,7 @@
 #include <string.h>
 #include <fcntl.h>           
 #include <unistd.h>
+#include <dirent.h>
 
 #define  READ 0
 #define  WRITE 1
@@ -34,4 +35,7 @@ void unlink_fifo(char* fifo);
 
 // given a C string(buffer), funct iterates through C string and extracts filename with strtok
 void extract_filename(char* buffer, char** temp);
+
+// deletes directory and all the files inside
+void delete_dir(char* directory);
 #endif
