@@ -4,11 +4,7 @@ void create_fifos(int no_fifo, char** fifo1, char** fifo2) {
     // if it's the first time a fifo is created, make a directory to store fifos to
     if(no_fifo==1) {
         char dir_path[] = "named_fifos";
-        DIR* dir = opendir(dir_path);
-        if (dir)                            // If dir already exists 
-            delete_dir(dir_path);           // completely remove it
-        
-        mkdir(dir_path, 0777);
+        delete_fifos(dir_path);           // remove previous contents
     }
     // Create a unique name (e.g manager_f_read_1 , manager_f_write_6 )
 	sprintf(*fifo1, "%s%d", "named_fifos/manager_read_", no_fifo);
@@ -88,7 +84,7 @@ void extract_filename(char* buffer, char** temp) {
     }
 }
 
-void delete_dir(char* directory) {
+void delete_fifos(char* directory) {
     struct dirent *dr;
     char file_path[350];
     DIR* dir;
@@ -102,8 +98,4 @@ void delete_dir(char* directory) {
         }
     closedir (dir);
     }
-
-    // then delete directory itself
-    if(rmdir(directory) == -1)
-        perror("Failed to remove directory.\n");
 }
