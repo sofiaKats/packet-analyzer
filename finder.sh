@@ -4,6 +4,7 @@
 
 for TLD
 do
+    echo " "
     echo "Checking all .out files for TLD : $TLD"
     counter=0
     # find all .out files in current directory
@@ -16,7 +17,7 @@ do
             location=${text[$i]}; num_of_appearances=${text[$(($i+1))]};
             if [[ "$location" == *"$TLD"* ]];  # if tld matches as substring in url
             then
-                echo "tld found @ file $eachfile line: $location"
+                echo "tld found @ file $eachfile line: $location $num_of_appearances"
                 let counter=$(($counter+$num_of_appearances)) # yet another appearance in file
             fi
         done
