@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 
             printf("message received from worker:%s\n",file);
             sleep(1);
-            open_file_and_search_for_urls(file);
+            open_file_and_search_for_urls(counter,file);
            
             //unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
