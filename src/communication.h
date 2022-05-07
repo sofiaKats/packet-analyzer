@@ -37,5 +37,5 @@ void unlink_fifo(char* fifo);
 void extract_filename(char* buffer, char** temp);
 
 // deletes directory and all the files inside
-void delete_dir(char* directory);
+void delete_fifos(char* directory);
 #endif
