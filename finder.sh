@@ -4,14 +4,13 @@
 amount_of_arguments=$#
 
 echo "total amount of arguments is: $amount_of_arguments"
-echo "given tld is: $tld "
+#echo "given tld is: $tld "
 
 #grep --include=\*.out -rnw '.' -e $tld
 #i=1
 #while [ $i -le $amount_of_arguments ]
 #do 
 #    tld=$i
-#    echo "Welcome $i times"
 #    echo "TLD is $tld"
 #    ((i++))
 #done
@@ -21,7 +20,7 @@ do
     echo "TLD is $TLD"
     counter=0
     # find all .out files in current directory
-    outfiles=`ls ./*.out`   
+    outfiles=`ls ./*.out`
     for eachfile in $outfiles
     do
         #echo $eachfile
