@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
             sleep(1);
             open_file_and_search_for_urls(file);
            
-            unlink_fifo(fifo1); unlink_fifo(fifo2);
+            //unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
             free(file);
             raise(SIGSTOP);  // child sends SIGSTOP to itself
