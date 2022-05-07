@@ -18,9 +18,13 @@ extern int errno;
 #include "queue.h"
 #include "url.h"
 
+int check_args(int argc, char** argv, char* directory_to_watch);
 
 int main(int argc, char *argv[])
 {
+   char directory_to_watch[32];
+
+   if(!check_args(argc,argv,directory_to_watch)) exit(1);
    pid_t  pid, pid2;
    int fd[2], counter = 0 ; // counter used for creating unique fifo names
 
@@ -46,12 +50,12 @@ int main(int argc, char *argv[])
          printf( "TEMP: %s\n", filename);
          
          ++counter; 
-         //check if a brand new worker is needed
+         
          // malloc for fifo names
          char* fifo1 = malloc(sizeof(char) * 1024) , *fifo2 = malloc(sizeof(char) * 1024);
          create_fifos(counter, &fifo1, &fifo2); /*create named pipe for worker-manager communication*/
          if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); } /*create worker*/ 
-         printf("fork:%d happened\n",counter);
+         
          // Manager Process
          if(pid2) {
             send_filename_to_worker(filename, fifo1, fifo2);
@@ -65,9 +69,8 @@ int main(int argc, char *argv[])
 
             printf("message received from worker:%s\n",file);
             sleep(1);
-            open_file_and_search_for_urls(counter,file);
+            open_file_and_search_for_urls(counter, directory_to_watch,file);
            
-            //unlink_fifo(fifo1); unlink_fifo(fifo2);
             free(fifo1); free(fifo2);
             free(file);
             raise(SIGSTOP);  // child sends SIGSTOP to itself
@@ -83,10 +86,33 @@ int main(int argc, char *argv[])
       dup2(fd[WRITE],1); // stdout(1) of listener process will write data to pipe
       close(fd[WRITE]);
 
-      execlp("inotifywait", "inotifywait", "-m", "example", "-e", "create", "-e" , "moved_to", (char*)NULL);
+      execlp("inotifywait", "inotifywait", "-m", directory_to_watch, "-e", "create", "-e" , "moved_to", (char*)NULL);
       perror("execlp failed.\n");
       exit(1);
    }
 
+   return 0;
+}
+
+int check_args(int argc, char** argv, char* directory_to_watch)
+{
+   // if no extra arguments are passed, watch current directory
+   if(argc==1) {
+      strcpy(directory_to_watch, ".");
+      return 1;
+   }
+   // else watch given directory from command line
+   else if (argc==3){
+      if(strcmp(argv[1], "-p")) {
+         perror("Second argument is not -p. Please run the program again.");
+         return 0;
+      }
+      else {
+         strcpy(directory_to_watch, argv[2]);
+         return 1;
+      }
+   }
+   else 
+      perror("Wrong amount of command line parameters.\n");
    return 0;
 }
