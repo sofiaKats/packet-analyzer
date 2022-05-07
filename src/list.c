@@ -18,12 +18,12 @@ void Insert_Node(List** list, char* url)
 {
     Url* newnode, *current;
     // url already exists on list, just increment the appearance counter and return
+    get_url_location(&url);
+
     if((newnode = Search_Url(*list,url))  ) {
         newnode->appearance++;
         return;
     }
-
-    get_url_location(&url);
 
     newnode = malloc(sizeof(Url));
     newnode->url = malloc(sizeof(char) * 1024);
