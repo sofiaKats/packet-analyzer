@@ -1,13 +1,13 @@
 #include "url.h"
 
-void open_file_and_search_for_urls(int start, char* filename)
+void open_file_and_search_for_urls(int start, char* directory, char* filename)
 {
     int fd;
     char *file = calloc(1024, sizeof(char)), *buffer = calloc(MAXBUFF, sizeof(char)); 
     List* url_list = Create_List();  // list to hold url strings and no of appearance in file
 
     char *token = strtok(filename, "\n");  // getting rid of garbage '\n' value from pipe
-    sprintf(file, "example/%s", token);    // !!!!! fix the directory name
+    sprintf(file, "%s/%s", directory, token);   
 
     if((fd = open(file, O_RDONLY)) == -1)
         printf("Couldn't open file. Error Number %d @ url.c file.\n", errno); 
