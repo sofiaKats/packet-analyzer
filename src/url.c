@@ -6,8 +6,7 @@ void open_file_and_search_for_urls(int start, char* directory, char* filename)
     char *file = calloc(1024, sizeof(char)), *buffer = calloc(MAXBUFF, sizeof(char)); 
     List* url_list = Create_List();  // list to hold url strings and no of appearance in file
 
-    char *token = strtok(filename, "\n");  // getting rid of garbage '\n' value from pipe
-    sprintf(file, "%s/%s", directory, token);   
+    sprintf(file, "%s/%s", directory, filename);   
 
     if((fd = open(file, O_RDONLY)) == -1)
         printf("Couldn't open file. Error Number %d @ url.c file.\n", errno); 
@@ -17,8 +16,8 @@ void open_file_and_search_for_urls(int start, char* directory, char* filename)
         char *temp_buff = buffer; // coping buffer to avoid strtok_r from changing it
         
         find_urls(&temp_buff, url_list);
-        create_file_and_write_valid_urls(start, url_list, token);
-        fprintf(stderr, "all done with filename: %s.out",token);
+        create_file_and_write_valid_urls(start, url_list, filename);
+        fprintf(stderr, "all done with filename: %s.out",filename);
        
     }
     free(buffer);
