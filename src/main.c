@@ -47,7 +47,8 @@ int main(int argc, char *argv[])
       {
          //extraction of filename from create message sent by inotifywait
          extract_filename(buffer, &filename);
-         printf( "\n\nfilename is: %s", filename);
+         char *token = strtok(filename, "\n");  // getting rid of garbage '\n' value from pipe
+         fprintf(stderr, "\n\nfilename is: %s\n", filename);
          
          ++counter; 
          
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
             receive_filename_from_manager(fifo1, fifo2, &file, &readfd, &writefd);
             Queue_Push(&queue, getpid(), file, readfd, writefd, fifo2, fifo1);
 
-            printf("filename received from worker:%s",file);
+            fprintf(stderr, "filename received from worker:%s\n",file);
             sleep(1);
             open_file_and_search_for_urls(counter, directory_to_watch,file);
 
