@@ -15,9 +15,11 @@ void open_file_and_search_for_urls(int start, char* directory, char* filename)
     while (read(fd, buffer, MAXBUFF) != 0)
     {   
         char *temp_buff = buffer; // coping buffer to avoid strtok_r from changing it
-
+        
         find_urls(&temp_buff, url_list);
         create_file_and_write_valid_urls(start, url_list, token);
+        fprintf(stderr, "all done with filename: %s.out",token);
+       
     }
     free(buffer);
     free(file);
@@ -43,14 +45,16 @@ void find_urls(char** temp_buff, List* url_list) {
 
         // extracting each word of file using <space> as delimeter
         while ((line = strtok_r(*temp_buff, "\n", temp_buff))) {
-            printf("LINE: %s\n", line); ///////////
+            //printf("LINE: %s\n", line); ///////////
 
             while ((token = strtok_r(line, " ", &line)))
             {
-                printf("TOKEN: %s\n", token); ///////////////
+                //printf("TOKEN: %s\n", token); ///////////////
 
-                if (regexec(&regex, token, 0, NULL, 0))            
-                    printf("Token %s is not an acceptable url.\n", token);   
+                if (regexec(&regex, token, 0, NULL, 0)) 
+                {
+                    //printf("Token %s is not an acceptable url.\n", token);  
+                }           
                 else {
                     Insert_Node(&url_list, token);
                 }                                                 
@@ -75,7 +79,7 @@ void create_file_and_write_valid_urls(int start, List* url_list, char* filename)
         perror("Failed to open .out file");
 
     write_url_data(url_list, fd); 
-     
+
      // close opened file
     if (close(fd) < 0) perror("Error while closing .out file.");
     Delete_List(&url_list); // we don't need the list anymore
