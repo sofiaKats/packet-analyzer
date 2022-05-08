@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
       {
          //extraction of filename from create message sent by inotifywait
          extract_filename(buffer, &filename);
-         printf( "TEMP: %s\n", filename);
+         printf( "\n\nfilename is: %s", filename);
          
          ++counter; 
          
@@ -67,10 +67,10 @@ int main(int argc, char *argv[])
             receive_filename_from_manager(fifo1, fifo2, &file, &readfd, &writefd);
             Queue_Push(&queue, getpid(), file, readfd, writefd, fifo2, fifo1);
 
-            printf("message received from worker:%s\n",file);
+            printf("filename received from worker:%s",file);
             sleep(1);
             open_file_and_search_for_urls(counter, directory_to_watch,file);
-           
+
             free(fifo1); free(fifo2);
             free(file);
             raise(SIGSTOP);  // child sends SIGSTOP to itself
