@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
    if (pid) {
       char buffer[MAXBUFF];
       memset(buffer, 0, MAXBUFF);  // initializing the buffer content
-      char* filename = malloc(sizeof(char) * 1024);
+      char filename[MAXBUFF];
+      memset(filename, 0, MAXBUFF);  // initializing the buffer content
       close(fd[WRITE]);
 
       // queue to with worker info
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
       while (read(fd[READ], buffer, sizeof(buffer)) != 0)
       {
          //extraction of filename from create message sent by inotifywait
-         extract_filename(buffer, &filename);
+         extract_filename(buffer, filename);
          char *token = strtok(filename, "\n");  // getting rid of garbage '\n' value from pipe
          fprintf(stderr, "\n\nfilename is: %s\n", filename);
          
@@ -55,6 +56,7 @@ int main(int argc, char *argv[])
          // malloc for fifo names
          char* fifo1 = malloc(sizeof(char) * 1024) , *fifo2 = malloc(sizeof(char) * 1024);
          create_fifos(counter, &fifo1, &fifo2); /*create named pipe for worker-manager communication*/
+         //signal(SIGINT, free_manager_memory);
          if ( (pid2 = fork()) == -1 ){ perror("failed to fork.\n"); exit(1); } /*create worker*/ 
          
          // Manager Process
@@ -74,7 +76,8 @@ int main(int argc, char *argv[])
 
             free(fifo1); free(fifo2);
             free(file);
-            raise(SIGSTOP);  // child sends SIGSTOP to itself
+            if(raise(SIGSTOP) != 0) // child sends SIGSTOP to itself
+                perror("Failed to raise SIGSTOP in child. \n");
          }
       }
       close(fd[READ]);
