@@ -76,10 +76,10 @@ void unlink_fifo(char* fifo) {
     }
 }
 
-void extract_filename(char* buffer, char** temp) {
+void extract_filename(char* buffer, char* temp) {
     char *token = strtok(buffer, " "); 
     while( token != NULL ) {
-        strcpy(*temp,token);     // last loop will store filename
+        strcpy(temp,token);     // last loop will store filename
         token = strtok(NULL, " ");
     }
 }
