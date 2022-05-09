@@ -34,7 +34,7 @@ void receive_filename_from_manager(char* fifo1, char* fifo2, char** filename, in
 void unlink_fifo(char* fifo);
 
 // given a C string(buffer), funct iterates through C string and extracts filename with strtok
-void extract_filename(char* buffer, char** temp);
+void extract_filename(char* buffer, char* temp);
 
 // deletes directory and all the files inside
 void delete_fifos(char* directory);
