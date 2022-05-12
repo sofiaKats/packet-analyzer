@@ -17,6 +17,7 @@
 #define MAXBUFF 1024
 #define PERMS   0666
 
+// some code used by: cgi.di.uoa.gr/~mema/courses/k24/lectures/topic4-ForkAndPipes.pdf
 
 // function to create named pipes between manager and worker
 void create_fifos(int no_fifo, char** fifo1, char** fifo2);

@@ -1,5 +1,7 @@
 #include "communication.h"
 
+// some code used by: cgi.di.uoa.gr/~mema/courses/k24/lectures/topic4-ForkAndPipes.pdf
+
 void create_fifos(int no_fifo, char** fifo1, char** fifo2) {
     // if it's the first time a fifo is created, make a directory to store fifos to
     if(no_fifo==1) {

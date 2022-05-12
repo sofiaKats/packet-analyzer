@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+// using my own implementation of a pointers queue homework, from the subject Data Structures
 
 typedef struct Worker {
     pid_t m_pid;

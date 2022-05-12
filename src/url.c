@@ -1,5 +1,7 @@
 #include "url.h"
 
+// code implemented with functions from: cgi.di.uoa.gr/~mema/courses/k24/lectures/topic3-UnixFileCommands.pdf
+
 void open_file_and_search_for_urls(int start, char* directory, char* filename)
 {
     int fd;

@@ -18,6 +18,8 @@ extern int errno;
 #include "queue.h"
 #include "url.h"
 
+// some code used by: cgi.di.uoa.gr/~mema/courses/k24/lectures/topic3-UnixFileCommands.pdf
+
 int check_args(int argc, char** argv, char* directory_to_watch);
 
 int main(int argc, char *argv[])
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
             receive_filename_from_manager(fifo1, fifo2, &file, &readfd, &writefd);
             Queue_Push(&queue, getpid(), file, readfd, writefd, fifo2, fifo1);
 
-            fprintf(stderr, "filename received from worker:%s\n",file);
+            fprintf(stderr, "filename received from worker %d :%s\n",counter,file);
             sleep(1);
             open_file_and_search_for_urls(counter, directory_to_watch,file);
 

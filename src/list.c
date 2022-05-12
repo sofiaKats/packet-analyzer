@@ -1,5 +1,7 @@
 #include "list.h"
 
+// using my own implementation of a link list homework, from the subject Data Structures
+
 // function to create linked list
 List* Create_List(void)
 {

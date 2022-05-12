@@ -1,5 +1,7 @@
 #include "queue.h"
 
+// using my own implementation of a pointers queue homework, from the subject Data Structures
+
 Queue* Create_Queue(void)
 {
     // Creation of queue

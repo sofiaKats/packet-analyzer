@@ -8,6 +8,7 @@
 #include <unistd.h> 
 #include <regex.h>
 
+// using my own implementation of a link list homework, from the subject Data Structures
 
 typedef struct node {
     char* url;
