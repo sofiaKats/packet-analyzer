@@ -77,7 +77,11 @@ assignements i had for the subject Data Structures ******
 
 
 There are comments everywhere in the files explaining the thought behind The
-implementation. 
+implementation. I made sure the code was clean enough for a 2nd person to 
+understand. The named pipes and pipes were done exactly like we were taught
+in the subject, the deletion of files in the directories also just like the
+pdfs above instructed, in order to remove the http prefix i used regex.h 
+library. For any further questions message me.
 
 
 
