@@ -3,7 +3,7 @@
 void open_file_and_search_for_urls(int start, char* directory, char* filename)
 {
     int fd;
-    char *file = calloc(1024, sizeof(char)), *buffer = calloc(MAXBUFF, sizeof(char)); 
+    char *file = calloc(1024, sizeof(char)), *buffer = calloc(18000, sizeof(char)); 
     List* url_list = Create_List();  // list to hold url strings and no of appearance in file
 
     sprintf(file, "%s/%s", directory, filename);   
@@ -11,7 +11,7 @@ void open_file_and_search_for_urls(int start, char* directory, char* filename)
     if((fd = open(file, O_RDONLY)) == -1)
         printf("Couldn't open file. Error Number %d @ url.c file.\n", errno); 
 
-    while (read(fd, buffer, MAXBUFF) != 0)
+    while (read(fd, buffer, 18000) != 0)
     {   
         char *temp_buff = buffer; // coping buffer to avoid strtok_r from changing it
         
